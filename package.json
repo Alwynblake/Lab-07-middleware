@@ -1,44 +1,15 @@
 {
-  "name": "Lab-07-middleware",
+  "name": "test-practice",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "directories": {
-    "doc": "docs"
-  },
   "scripts": {
-    "test": "jest --coverage"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Alwynblake/Lab-07-middleware.git"
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Alwynblake/Lab-07-middleware/issues"
-  },
-  "homepage": "https://github.com/Alwynblake/Lab-07-middleware#readme",
-  "devDependencies": {
-    "arithmetic": "^1.0.1",
-    "faker": "^4.1.0",
-    "jest": "^24.1.0"
-  },
   "dependencies": {
-    "cors": "^2.8.5",
-    "ejs": "^2.6.1",
-    "eslint": "^5.15.0",
-    "eslint-plugin-import": "^2.16.0",
-    "eslint-plugin-jest": "^22.3.0",
-    "express": "^4.16.4",
-    "method-override": "^3.0.0",
-    "mongo": "^0.1.0",
-    "mongodb-memory-server": "^3.1.2",
-    "mongoose": "^5.4.17",
-    "morgan": "^1.9.1",
-    "superagent": "^4.1.0",
-    "supertest": "^3.4.2",
-    "uuid": "^3.3.2"
+    "express": "^4.16.4"
   }
 }
