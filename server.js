@@ -1,30 +1,78 @@
 'use strict';
 
 const express = require('express');
+const loggerMiddleware = require('./logger');
+const errorMiddleware = require('./error');
 
 const app = express();
 
-const PORT = process.env.PORT || 8080;
+// Vinicio - before I define any routes, I want to set up a middleware function
+// Vinicio - Having a "naked" app.use will always involve a Global middleware
+app.use(loggerMiddleware);
 
-app.get('/a', (req,res) => {
-  res.status(200).send('Route A');
+
+const simpleMiddleware = (request,response,next) => {
+  console.log('This is a simple MW');
+  next();
+};
+
+const curriedMiddleware = (argument) => {
+  // Vinicio - This is a curried function BECAUSE it's a function that returns a function
+  // Vinicio - This function has argument 'pre-loaded'
+  return (request,response,next) => {
+    // Vinicio - from here, I have access to argument via a closure
+    console.log(argument);
+    request.customValue = argument;
+    next();
+  };
+  // Vinicio - scope should end right here
+};
+
+app.get('/', (request, response) => {
+  console.log('I am in the / route');
+  response.status(200);
+  response.send('/');
 });
 
-app.get('/b', (req,res) => {
-  res.status(200).send('Route B');
+app.get('/simple',simpleMiddleware,(request, response) => {
+  console.log('I am in the /simple route');
+  response.status(200);
+  response.send('Simple');
+  // Vinicio - let's pretend we have an error
+  // // Vinicio - Here, I have to know that next() represenst my error handler
+  // next();
+  // throw 'ERROR :(';
 });
 
-app.get('/c', (req,res) => {
-  res.status(200).send('Route C');
+// Vinicio - we pre-apply a value
+const preAppliedKali = curriedMiddleware('Kali');
+
+// We use a value right here
+app.get('/curried',preAppliedKali,(request, response) => {
+  console.log('I am in the /simple route');
+  response.status(200);
+  response.send(request.customValue);
+  // Vinicio - let's pretend we have an error
+  // // Vinicio - Here, I have to know that next() represenst my error handler
+  // next();
+  // throw 'ERROR :(';
 });
 
-app.get('/d', (req,res) => {
-  res.status(200).send('Route D');
+app.get('/curried2',curriedMiddleware('Khal Basil is Cute'),(request, response) => {
+  console.log('I am in the /simple route');
+  response.status(200);
+  response.send(request.customValue);
+  // Vinicio - let's pretend we have an error
+  // // Vinicio - Here, I have to know that next() represenst my error handler
+  // next();
+  // throw 'ERROR :(';
 });
 
-app.listen(PORT, () => console.log(`Listening on ${PORT}`));
+app.use(errorMiddleware);
+app.use(function(err,req,res,next) {
+  console.log("writing error handling middleware",err.stack);
+  res.status(500).send({"not found" : err.stack});
+});
+// Write middleware that runs on every route that adds a property called requestTime with a value of the current Date/Time to the request object
 
-// Write error handling middleware
-.catch(err=>console.error(err));
-// Write not found middleware and a catch-all route that uses it.
-app.get('*',(req,res)=>res.status(404).send('not found'));
+app.listen(3000);
